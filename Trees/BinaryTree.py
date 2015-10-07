@@ -33,10 +33,35 @@ class BinaryTree(object):
 		rightLoad = self._preOrderTransversal_helper(root.rightNode)
 		rightLoad = " -> " +  rightLoad if rightLoad is not None else ""
 		return root.load + leftLoad + rightLoad
-		 
 	
 	def preOrderTransversal(self):
 		return self._preOrderTransversal_helper(self._root)
+		
+	def _inOrderTransversal_helper(self, root):
+		if root is None:
+			return None
+		
+		leftLoad = self._inOrderTransversal_helper(root.leftNode)
+		leftLoad = leftLoad + " -> " if leftLoad is not None else ""
+		rightLoad = self._inOrderTransversal_helper(root.rightNode)
+		rightLoad = " -> " +  rightLoad if rightLoad is not None else ""
+		return leftLoad + root.load + rightLoad
+		
+	def inOrderTransversal(self):
+		return self._inOrderTransversal_helper(self._root)
+		
+	def _postOrderTransversal_helper(self, root):
+		if root is None:
+			return None
+		
+		leftLoad = self._postOrderTransversal_helper(root.leftNode)
+		leftLoad = leftLoad + " -> " if leftLoad is not None else ""
+		rightLoad = self._postOrderTransversal_helper(root.rightNode)
+		rightLoad = rightLoad + " -> " if rightLoad is not None else ""
+		return leftLoad + rightLoad + root.load
+		
+	def postOrderTransversal(self):
+		return self._postOrderTransversal_helper(self._root)
 		
 if __name__=="__main__":
 	btree = BinaryTree(Node('F'));
@@ -50,7 +75,7 @@ if __name__=="__main__":
 	btree.insert(Node('H'));
 	
 	root = btree.getRoot()
-	print root.leftNode
-	print root.rightNode
 	
 	print btree.preOrderTransversal()
+	print btree.inOrderTransversal()
+	print btree.postOrderTransversal()

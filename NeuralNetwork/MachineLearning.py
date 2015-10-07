@@ -12,7 +12,7 @@ class MachineLearning:
 	input_layer_size  = 400 # 20x20 Input Images of Digits with 5000 training sample
 	hidden_layer_size = 25  # 25 hidden units
 	output_layer_size = 10
-	num_labels = 10         # 10 labels, from 1 to 10   
+	num_labels = 10         # 10 labels, from 0 to 9   
 	
 	def readMat(self, fileName):
 		return sio.loadmat(fileName)
@@ -30,6 +30,7 @@ class MachineLearning:
 		indx = randint(0,SampleMatrix.shape[0]-1)
 		X = np.reshape(SampleMatrix[indx:indx+4].flatten(), (40, 40)) # randomly display handwritten digit sample
 		plt.imshow(np.transpose(X), interpolation='none')
+		print np.transpose(X)
 		
 	def displayCostVsIter(self, J_array):
 		max_cost = J_array.max()
@@ -79,7 +80,7 @@ class MachineLearning:
 	def costFunction(self, X, y, theta1, theta2, debug):
 		m = X.shape[0]
 		J = 0
-		X_b = np.append(np.ones((X_pre.shape[0],1)), X_pre, 1) # add bias term in the input vectors
+		X_b = np.append(np.ones((X.shape[0],1)), X, 1) # add bias term in the input vectors
 		THETA1_grad = np.zeros(theta1.shape)
 		THETA2_grad = np.zeros(theta2.shape)
 		for i in range(0, m):
@@ -177,6 +178,7 @@ class MachineLearning:
 			theta2 = theta2 - np.multiply(self.learningRate/m, THETA2_grad)
 		
 		if (J_array[-1] - J_array[0]) < 0:
+			# only save the weighted matrix when cost is decreasing
 			self.saveMat(theta1, theta2)
 		else:
 			print 'cost is increasing'
@@ -201,7 +203,8 @@ class MachineLearning:
 			h1 = np.append(1, h1)
 			h2 = self.sigmoid(self.linearCombo(theta2, h1))
 			# take the index of max value, which is the actual value
-			# note that y is matrix with value from 1 to 10, neet to take the offset
+			# note that y is matrix (5000 x 1) with value from 1 to 10, need to take the offset
+			# so need to make the prediction scaled from 0 - 9 to 1 - 10 to meet the given y value
 			p[i] = np.argmax(h2) + 1 
 		return p
 	
@@ -248,6 +251,7 @@ if __name__=='__main__':
 	print 'With Weight trained from scratch: {}% accurancy'.format(ml.measureAccurancy(dataSet['theta1'], dataSet['theta2'], X_pre, y))
 	print 'y[538]: {}, feed forwad with X[538]: {}'.format(y[538][0], ml.singlePredict(dataSet['theta1'], dataSet['theta2'], X_pre[538]))
 	ml.displayCostVsIter(J_array)
+	
 	# ml.displayTheta(dataSet['theta1'], dataSet['theta2'])
 	# ml.displayTheta(Theta1, Theta2)
 	# print ml.linearCombo(Theta1, np.append(1, X_pre[0])).shape
