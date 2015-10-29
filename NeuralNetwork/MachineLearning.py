@@ -59,11 +59,10 @@ class MachineLearning:
 	def showAllGraphs(self):
 		plt.show()
 		
-	def setEPSILON(self, X, y):
-		Linput = X.max()
-		Loutput = y.max()
-		self.EPSILON = np.sqrt(6 / (Linput + Loutput))
-		
+	def setEPSILON(self, Linput, Loutput):
+		# 6.0 is important here as it make the expression as float
+		self.EPSILON = np.sqrt(6.0 / (Linput + Loutput))
+			
 	def sigmoid(self, z):
 		return 1.0 / (1.0 + np.exp(-z))
 	
@@ -153,7 +152,6 @@ class MachineLearning:
 	
 	def trainNN(self, X, y, iter, isThetaExist):
 		m = X.shape[0]
-		self.setEPSILON(X, y)
 		J_array = np.zeros((iter,))
 		
 		# see if there are old thetas to use
@@ -162,6 +160,7 @@ class MachineLearning:
 			theta1 = thetaDict['theta1']
 			theta2 = thetaDict['theta2']
 		else:
+			self.setEPSILON(self.input_layer_size, self.output_layer_size)
 			theta1 = 2*self.EPSILON*np.random.random((self.hidden_layer_size,self.input_layer_size + 1)) - self.EPSILON # 400 input, 25 hidden unit, 10 output
 			theta2 = 2*self.EPSILON*np.random.random((self.output_layer_size,self.hidden_layer_size + 1)) - self.EPSILON # 400 input, 25 hidden unit, 10 output
 			# dim(theta2) = 10x26
